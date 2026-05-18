@@ -3,6 +3,7 @@ using Domain.Exceptions;
 using Domain.Exceptions.Reservations;
 using Domain.Exceptions.Seats;
 using Domain.Exceptions.Users;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 public class ExceptionMiddleware
@@ -81,6 +82,10 @@ public class ExceptionMiddleware
         catch (UserCredentialsIncorrectException ex)
         {
             await StatusMessage(context, 401, ex.Message,ex);
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            await StatusMessage(context, 409, "Conflicto de concurrencia al reservar el asiento", ex);
         }
         catch (Exception ex)
         {
